@@ -11,6 +11,7 @@ class Registrar {
     Database db;
 	int currentIndex;
     int sizeOfPeople;
+    String url;
     Random ran = new Random();
     
 
@@ -18,8 +19,8 @@ class Registrar {
         Constructs Registrar object
     */
     public Registrar(String url, boolean shuffle, ArrayList<Person> allPep, HashMap<Integer, Project> allCourse) {
-        db = new Database(url);
-
+        //db = new Database(url);
+        this.url=url;
         for(int i=0;i<allPep.size();i++){
             this.allPeople.add(allPep.get(i).getClone());
         }
@@ -43,7 +44,7 @@ class Registrar {
         if(pref==9){
             return true;
         }
-        int pweekid = db.getPreference(p.getStudentID(),pref);
+        int pweekid = p.prefToPweekID(pref);//db.getPreference(p.getStudentID(),pref);
         // if(pweekid!=p.prefToPweekID(pref)){
         //     System.out.println("AHH");
         // }
@@ -62,7 +63,7 @@ class Registrar {
             unluckyPeople.add(p);
             return;
         }
-        int projectPref = db.getPreference(p.getStudentID(),left.get(0));
+        int projectPref = p.prefToPweekID(left.get(0));//db.getPreference(p.getStudentID(),left.get(0));
         p.setCurrentPreferance(left.get(0));
         allCourses.get(projectPref).addStudent(p);
     }
@@ -76,7 +77,7 @@ class Registrar {
             unluckyPeople.add(p);
             return;
         }
-        int projectPref=db.getPreference(p.getStudentID(),pref);
+        int projectPref=p.prefToPweekID(pref);//db.getPreference(p.getStudentID(),pref);
         p.setCurrentPreferance(pref);
         allCourses.get(projectPref).addStudent(p);
     }
@@ -164,6 +165,7 @@ class Registrar {
     }
 
     public void outputResults() {
+        db = new Database(this.url);
         Saver saver = new Saver("output.csv");
 
         new ArrayList(allCourses.keySet());

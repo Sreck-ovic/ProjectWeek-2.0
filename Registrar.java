@@ -33,10 +33,10 @@ class Registrar {
 			ArrayList<Person> interest = checkInterest(v.getProjectID());
 
 
-			if (interest.size() > v.getMaxStudents() ){
+			if (interest.size() > v.getMinStudents() ){
 				this.allCourses.put(v.getProjectID(), v.getClone());
 			} 
-			else if (interest.size() == v.getMaxStudents()){
+			else if (interest.size() == v.getMinStudents()){
 				Project exactlyFilled = v.getClone();
 				for (Person person : interest){
 					exactlyFilled.addStudent(person);

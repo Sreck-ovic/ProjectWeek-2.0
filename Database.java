@@ -251,6 +251,11 @@ public class Database {
         return IDValues;
     }
 
+    /**
+        public ArrayList<Integer> getAllAverages()
+
+        returns ArrayList of all student averages for non-freshmen
+    */
     public ArrayList<Integer> getAllAverages() {
         String sql = "SELECT PrevYearAvg FROM StudentPrevAvgs WHERE PrevYearAvg > '0';";
         ArrayList<Integer> AllValues = new ArrayList<Integer>();

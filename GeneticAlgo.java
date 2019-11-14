@@ -1,5 +1,4 @@
 import java.util.*;
-import javafx.util.*;
 
 public class GeneticAlgo{
 	ArrayList<Pair<Double,Registrar>> population = new ArrayList<Pair<Double,Registrar>>();

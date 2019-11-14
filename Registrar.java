@@ -13,18 +13,42 @@ class Registrar {
     int sizeOfPeople;
     String url;
     Random ran = new Random();
-    
+   	ArrayList<Integer> underfilledIDs; 
 
     /**
         Constructs Registrar object
     */
-    public Registrar(String url, boolean shuffle, ArrayList<Person> allPep, HashMap<Integer, Project> allCourse) {
+    public Registrar(String url, boolean shuffle, ArrayList<Person> allPep, HashMap<Integer, Project> allCourse, ArrayList<Integer> underfilledIDs) {
+		for(Integer id : underfilledIDs){
+			allCourse.remove(id);
+		}
         //db = new Database(url);
         this.url=url;
         for(int i=0;i<allPep.size();i++){
             this.allPeople.add(allPep.get(i).getClone());
         }
-        allCourse.forEach((k,v) -> this.allCourses.put(v.getProjectID(),v.getClone()));
+		this.underfilledIDs = underfilledIDs;
+		
+        allCourse.forEach((k, v) -> {
+			ArrayList<Person> interest = checkInterest(v.getProjectID());
+
+
+			if (interest.size() > v.getMaxStudents() ){
+				this.allCourses.put(v.getProjectID(), v.getClone());
+			} 
+			else if (interest.size() == v.getMaxStudents()){
+				Project exactlyFilled = v.getClone();
+				for (Person person : interest){
+					exactlyFilled.addStudent(person);
+					allPeople.remove(person);
+				}
+				this.allCourses.put(v.getProjectID(), exactlyFilled);
+			}
+        });
+
+
+
+//        allCourse.forEach((k,v) -> this.allCourses.put(v.getProjectID(),v.getClone()));
 
         if (shuffle)
              Collections.shuffle(allPeople); 
@@ -48,11 +72,30 @@ class Registrar {
         // if(pweekid!=p.prefToPweekID(pref)){
         //     System.out.println("AHH");
         // }
-        if(pweekid==Integer.MIN_VALUE || pweekid==0){
+        if(pweekid==Integer.MIN_VALUE || pweekid==0 || allCourses.get(pweekid) == null){
             return false;
         }
         return !allCourses.get(pweekid).isFull();
     }
+
+	public ArrayList<Person> checkInterest(int projectID){
+		ArrayList<Person> interest = new ArrayList<Person>();
+		//for each person
+		for(Person person : allPeople){
+			//check if they signed up for this pweek in top 5
+			int[] projects = person.getPrefpweekIDs();
+			for(int i = 0; i < 5; i++){
+
+				if (projectID == projects[i]){
+					interest.add(person);
+				}
+
+			}
+		}
+
+		return interest;
+	}
+
     public void randPlace(Person p){
         ArrayList<Integer> left = new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9));
         while(!canPlace(p,left.get(0))){
@@ -88,15 +131,20 @@ class Registrar {
             unluckyPeople.add(p);
             return null;
         }
-
         int nextPrefChoice = p.prefToPweekID(p.getCurrentPreference());//db.getPreference(p.getStudentID(), p.getCurrentPreference());
-        if (nextPrefChoice == Integer.MIN_VALUE || nextPrefChoice == 0) {
+        if (underfilledIDs.contains(nextPrefChoice)){
+			allCourses.remove(nextPrefChoice);
+		}
+		if (nextPrefChoice == 149){
+
+		}
+		if (nextPrefChoice == Integer.MIN_VALUE || nextPrefChoice == 0) {
             unluckyPeople.add(p);
             return null;
         }
 
         Project nextProject = allCourses.get(nextPrefChoice);
-
+		if (nextProject == null) return null;
         if (!nextProject.isFull()) {
             nextProject.addStudent(p);
             return null;
@@ -163,8 +211,35 @@ class Registrar {
     public void printBadPeople() {
         System.out.println(unluckyPeople);
     }
+	public ArrayList<Integer> outputResults(){
+				int[] x = {0,0,0,0,0,0,0,0};
+		
+		for(Person p : allPeople){
+				if (p.getCurrentPreference()-1 == 8){
+				continue;
+				}
+				x[p.getCurrentPreference()-1]++;
+		}
 
-    public void outputResults() {
+		for (int i =0; i < 8 ;  i++){
+			int t = i+1;
+			System.out.println("Number of people who got their #" + t + " choice: " + x[i]);	
+		}
+		System.out.println("Number of people who are not placed is: " + unluckyPeople.size());	
+		ArrayList<Integer> underfilled = new ArrayList<Integer>();
+
+        for (Project v : allCourses.values()){
+			if(v.getSize() < v.getMinStudents()){
+				System.out.println("Underfilled Project!!! Project Id is : " + v.getProjectID() + " it only has: " + v.getSize() + " people and the size is " + v.getMinStudents());
+			
+				underfilled.add(v.getProjectID());
+			}
+			
+        }
+		return underfilled;
+
+	}
+/*    public void outputResults() {
         db = new Database(this.url);
         Saver saver = new Saver("output.csv");
 
@@ -180,12 +255,13 @@ class Registrar {
 
         saver.write(new ArrayList<>(Arrays.asList("ID", "ChoiceNum", "ProjID", "Gender", "Grade", "Score")));
 
+		
         for (int i=0; i < tempList.size(); i++) {
             studentsInProject = allCourses.get(tempList.get(i)).getEnrolledStudents();
             for (int p=0; p<studentsInProject.size(); p++) {
                 curPerson = studentsInProject.get(p);
                 outputStats.clear();
-                
+               
                 outputStats.add(curPerson.getStudentID()); //Id
                 outputStats.add(curPerson.getCurrentPreference()); //Choice
                 outputStats.add(tempList.get(i)); //projectId
@@ -219,5 +295,7 @@ class Registrar {
         for (int i=0; i<9; i++) {
             System.out.println("Choice"+(i+1)+": "+scores[i]);
         }
-    }
+    }*/
+
+
 }

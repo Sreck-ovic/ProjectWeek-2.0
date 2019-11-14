@@ -39,7 +39,7 @@ public class Project{
 	public int getnumGirls(){
 		return this.numGirls;
 	}
-	public int getmaxStudents(){
+	public int getMaxStudents(){
 		return this.maxStudents;
 	}
 	public void setEnrolledStudents(ArrayList<Person> newStudents){

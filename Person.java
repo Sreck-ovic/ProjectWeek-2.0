@@ -64,6 +64,10 @@ public class Person{
 	public int getStudentID(){
 		return this.studentID;
 	}
+	
+	public int[] getPrefpweekIDs(){
+		return this.prefpweekIDs;
+	}
 
 	public void setCurrentPreferance(int x){
 		this.currentPreference=x;

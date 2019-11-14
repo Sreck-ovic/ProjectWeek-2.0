@@ -5,13 +5,15 @@ public class GeneticAlgo{
 	ArrayList<Pair<Double,Registrar>> aux = new ArrayList<Pair<Double,Registrar>>();
 	ArrayList<Person> allPeople = new ArrayList<Person>();
 	HashMap<Integer, Project> allCourses = new HashMap<>();
+	ArrayList<Integer> badProjects;
 	StatWizard dylan;
 	Database db;
 	int size;
 	double totalScore;
 	String url;
 
-	public GeneticAlgo(String url){
+	public GeneticAlgo(String url, ArrayList<Integer> bad){
+		this.badProjects = bad;
 		db = new Database(url);
 
 		this.url=url;
@@ -29,7 +31,7 @@ public class GeneticAlgo{
         int pid;
         for (int i=0; i < tempList.size(); i++) {
             pid = tempList.get(i);
-			allCourses.put(pid, new Project(pid, db.getMaxStudents(pid)));
+			allCourses.put(pid, new Project(pid, db.getMaxStudents(pid), db.getMinStudents(pid)));
 		}
 	}
 
@@ -51,7 +53,11 @@ public class GeneticAlgo{
 	public void populate(int size){
 		this.size = size;
 		for(int i=0;i<size;i++){
-			this.population.add(new Pair<Double,Registrar>(0.0, new Registrar(url, true, allPeople, allCourses)));
+
+	
+		
+
+			this.population.add(new Pair<Double,Registrar>(0.0, new Registrar(url, true, allPeople, allCourses, badProjects)));
 			this.aux.add(null);
 		}
 		fillprojects();
@@ -72,11 +78,24 @@ public class GeneticAlgo{
 	}
 	public void addProjectVal(Project v){
 		ArrayList<Person> arr = v.getEnrolledStudents();
+		if (arr.size() == 0) return;
 		double projectScore = 0;
 		for(int i=0;i<arr.size();i++){
 			projectScore+=studentVal(arr.get(i));
 		}
-		totalScore+=projectScore;
+		
+
+		//adding requirement that there can't be underfilled projects
+
+
+
+
+
+		if(v.getSize() < v.getMinStudents()){
+
+			return;	
+		 }
+		totalScore += projectScore;
 		//totalScore+=100*v.getGenderScore();
 	}
 	public double studentVal(Person s){
@@ -148,7 +167,7 @@ public class GeneticAlgo{
 	}
 
 	private Registrar matepair(Registrar reg1, Registrar reg2) {
-		Registrar regchild = new Registrar(url, true, allPeople, allCourses);
+		Registrar regchild = new Registrar(url, true, allPeople, allCourses, badProjects);
 		while(regchild.hasMorePeople()){
 			Person curperson = regchild.getNextPerson();
 			int pref1 = reg1.getStudentPref(curperson.getStudentID());

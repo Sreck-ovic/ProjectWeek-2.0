@@ -1,6 +1,11 @@
 import java.util.ArrayList;
+
 public class RunGenetic{
+
+
+
 	public static void main(String args[]){
+		int totalGenerations = 10000;
 		System.out.println("Setting Up Algorithm #1");
 		ArrayList<Integer> test = new ArrayList<Integer>();
 		//test.add(149);
@@ -11,7 +16,7 @@ public class RunGenetic{
 //		gen.getTopReg().outputResults();
 
 		System.out.println("Genetic Algorithm #1");
-		for(int i=0;i<10000;i++){
+		for(int i=0;i<totalGenerations;i++){
 			//System.out.println("Generation "+i);
 			gen.killandmate();
 			gen.sort();
@@ -28,12 +33,12 @@ public class RunGenetic{
 //		gen.getTopReg().outputResults();
 
 		System.out.println("Genetic Algorithm #2");
-		for(int i=0;i<10000;i++){
+		for(int i=0;i<totalGenerations;i++){
 		//	System.out.println("Generation "+i);
 			gen2.killandmate();
 			gen2.sort();
 		}
-		ArrayList<Integer> ad = gen2.getTopReg().outputResults();
+		gen2.getTopReg().outputResultstoCSV();
 
 
 

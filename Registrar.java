@@ -239,7 +239,7 @@ class Registrar {
 		return underfilled;
 
 	}
-/*    public void outputResults() {
+    public void outputResultstoCSV() {
         db = new Database(this.url);
         Saver saver = new Saver("output.csv");
 
@@ -257,6 +257,10 @@ class Registrar {
 
 		
         for (int i=0; i < tempList.size(); i++) {
+			//if it's not in allCourses then that trip didn't run
+			if(!allCourses.containsKey(tempList.get(i))){
+				continue;
+			}
             studentsInProject = allCourses.get(tempList.get(i)).getEnrolledStudents();
             for (int p=0; p<studentsInProject.size(); p++) {
                 curPerson = studentsInProject.get(p);
@@ -295,7 +299,7 @@ class Registrar {
         for (int i=0; i<9; i++) {
             System.out.println("Choice"+(i+1)+": "+scores[i]);
         }
-    }*/
+    }
 
 
 }

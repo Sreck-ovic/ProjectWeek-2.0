@@ -4,12 +4,13 @@ import static java.lang.Math.*;
 public class Project{
 	ArrayList<Person> enrolledStudents;
 	int maxStudents;
+	int minStudents;
 	int projectID;
 	int numBoys;
 	int numGirls;
 	int lowestScore;
 
-	public Project(int projectID, int maxStudents){
+	public Project(int projectID, int maxStudents, int minStudents){
 		this.projectID = projectID;
 		this.maxStudents = maxStudents;
 		this.enrolledStudents = new ArrayList<Person>();
@@ -25,17 +26,20 @@ public class Project{
 	}
 
 	//getters
+	public int getMinStudents(){
+		return this.minStudents;
+	}
 	public int getProjectID(){
 		return this.projectID;
 	}
-	public int getnumBoys(int numBoys){
-		return numBoys;
+	public int getnumBoys(){
+		return this.numBoys;
 	}
-	public int getnumGirls(int numGirls){
-		return numGirls;
+	public int getnumGirls(){
+		return this.numGirls;
 	}
-	public int getmaxStudents(int maxstudents){
-		return maxStudents;
+	public int getmaxStudents(){
+		return this.maxStudents;
 	}
 	public void setEnrolledStudents(ArrayList<Person> newStudents){
 		this.enrolledStudents = newStudents;
@@ -56,12 +60,14 @@ public class Project{
 		this.numGirls = girls;
 	}
 	public Project getClone() {
-		return new Project(this.projectID, this.maxStudents);
+		return new Project(this.projectID, this.maxStudents, this.minStudents);
 	}
 	// public double getGenderScore(){
 		
 	// }
-
+	public int getSize(){
+		return this.enrolledStudents.size();
+	}
 	public Person getLowestScorePerson() {
 		if (enrolledStudents.size() == 0) {
 			System.out.println("Printing null");

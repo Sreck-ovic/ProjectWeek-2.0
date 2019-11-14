@@ -1,17 +1,22 @@
 import java.util.*;
 
 public class GeneticAlgo{
-	ArrayList<Pair<Double,Registrar>> population = new ArrayList<Pair<Double,Registrar>>();
-	ArrayList<Pair<Double,Registrar>> aux = new ArrayList<Pair<Double,Registrar>>();
-	ArrayList<Person> allPeople = new ArrayList<Person>();
-	HashMap<Integer, Project> allCourses = new HashMap<>();
-	ArrayList<Integer> badProjects;
-	StatWizard dylan;
-	Database db;
-	int size;
-	double totalScore;
-	String url;
+	private ArrayList<Pair<Double,Registrar>> population = new ArrayList<Pair<Double,Registrar>>();
+	private ArrayList<Pair<Double,Registrar>> aux = new ArrayList<Pair<Double,Registrar>>();
+	private ArrayList<Person> allPeople = new ArrayList<Person>();
+	private HashMap<Integer, Project> allCourses = new HashMap<>();
+	private ArrayList<Integer> badProjects;
+	private StatWizard dylan;
+	private Database db;
+	private int size;
+	private double totalScore;
+	private String url;
 
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	public GeneticAlgo(String url, ArrayList<Integer> bad){
 		this.badProjects = bad;
 		db = new Database(url);
@@ -35,6 +40,11 @@ public class GeneticAlgo{
 		}
 	}
 
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	private int calculateScore(int studentId) {
         int prevScores[] = db.getPrevYears(studentId);
         int score=0;
@@ -50,6 +60,11 @@ public class GeneticAlgo{
         return score;
     }
 
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	public void populate(int size){
 		this.size = size;
 		for(int i=0;i<size;i++){
@@ -62,6 +77,12 @@ public class GeneticAlgo{
 		}
 		fillprojects();
 	}
+
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	public void fillprojects(){
 		for(int i=0;i<this.population.size();i++){
 			Registrar temp = fillregistrar(this.population.get(i).getValue());
@@ -70,12 +91,24 @@ public class GeneticAlgo{
 			this.population.set(i,new Pair<Double,Registrar>(val,temp));
 		}
 	}
+
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	public void evaluateSolutionToTotalScore(Registrar reg){
 		HashMap<Integer, Project> allProjects = reg.getProjects();
 		totalScore = 0;
 		allProjects.forEach((k,v) -> addProjectVal(v));
 		ArrayList<Person> arr = reg.getUnlucky();
 	}
+
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	public void addProjectVal(Project v){
 		ArrayList<Person> arr = v.getEnrolledStudents();
 		if (arr.size() == 0) return;
@@ -83,36 +116,48 @@ public class GeneticAlgo{
 		for(int i=0;i<arr.size();i++){
 			projectScore+=studentVal(arr.get(i));
 		}
-		
 
+		//WAS THIS IMPLEMENTED
 		//adding requirement that there can't be underfilled projects
 
-
-
-
-
-		if(v.getSize() < v.getMinStudents()){
-
+		if(v.getSize() < v.getMinStudents()){ //Devalues underfilled projects
 			return;	
 		 }
 		totalScore += projectScore;
 		//totalScore+=100*v.getGenderScore();
 	}
+
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	public double studentVal(Person s){
 		double scaler = s.getScore();
 		double choicenum = s.getCurrentPreference();
 		double numerator = (Math.pow(choicenum,2)*-1)+65;
+
 		double denom1 = 200/scaler;
 		double denom2 = Math.floor((1/5.0)*choicenum)+1;
+
 		double studentscore = numerator/(denom1+denom2);
 		return studentscore/2;
 	}
 
+	/**
+	 * public void sort()
+	 *
+	 * Begins mergesort process; array with indexes 0 to population size
+	 */
 	public void sort(){
 		sort(0,population.size()-1);
 	}
 
-
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	public void sort(int lo, int hi){
 
 		//Base case
@@ -153,7 +198,6 @@ public class GeneticAlgo{
 		}
 	}
 
-
 	public void killandmate(){
 		for(int i=0;((2*this.size)/3)+(i/2)<this.size;i+=2){
 			Registrar temp = matepair(this.population.get(i).getValue(),this.population.get(i+1).getValue());
@@ -185,7 +229,6 @@ public class GeneticAlgo{
 			} else {
 				regchild.randPlace(curperson);
 			}
-
 		}
 		return regchild;
 	}

@@ -5,8 +5,10 @@ public class RunGenetic{
 		int totalGenerations = 10000;
 		System.out.println("Setting Up Algorithm #1");
 		ArrayList<Integer> test = new ArrayList<Integer>();
+
+		final String url = "jdbc:sqlite:pweek.db";
 		
-		GeneticAlgo gen = new GeneticAlgo("jdbc:sqlite:pweek.db", new ArrayList<Integer>());
+		GeneticAlgo gen = new GeneticAlgo(url, new ArrayList<Integer>());
 		gen.populate(100);
 		gen.sort();
 //		gen.getTopReg().outputResults();
@@ -20,24 +22,28 @@ public class RunGenetic{
 		}
 		System.out.println("");
 
-		ArrayList<Integer> bad = gen.getTopReg().outputResults();
-		System.out.println("Bad = " + bad);
+		ArrayList<Integer> badProjects = gen.getTopReg().outputResults();
+		System.out.println("Bad = " + badProjects);
 		System.out.println("Setting Up Algorithm #2");
-		test.add(149);
-		test.add(167);
-		GeneticAlgo gen2 = new GeneticAlgo("jdbc:sqlite:pweek.db", bad);
+
+		GeneticAlgo gen2 = new GeneticAlgo(url, badProjects);
 		
 		gen2.populate(100);
 		gen2.sort();
-//		gen.getTopReg().outputResults();
 
-		System.out.println("Genetic Algorithm #2");
-		for(int i=0;i<totalGenerations;i++){
-			System.out.print("\rGeneration "+i + "/"+totalGenerations);
-			gen2.killandmate();
-			gen2.sort();
+		if (badProjects.size() > 0) {
+			System.out.println("Genetic Algorithm #2");
+
+			for (int i = 0; i < totalGenerations; i++) {
+				System.out.print("\rGeneration " + i + "/" + totalGenerations);
+				gen2.killandmate();
+				gen2.sort();
+			}
+			System.out.println("");
+			gen2.getTopReg().outputResultstoCSV();
 		}
-		System.out.println("");
-		gen2.getTopReg().outputResultstoCSV();
+		else {
+			gen.getTopReg().outputResultstoCSV();
+		}
 	}
 }

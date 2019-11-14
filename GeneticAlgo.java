@@ -144,11 +144,20 @@ public class GeneticAlgo{
 		return studentscore/2;
 	}
 
+	/**
+	 * public void sort()
+	 *
+	 * Begins mergesort process; array with indexes 0 to population size
+	 */
 	public void sort(){
 		sort(0,population.size()-1);
 	}
 
-
+	/**
+	 * NEEDS JAVADOC
+	 * @param s
+	 * @return
+	 */
 	public void sort(int lo, int hi){
 
 		//Base case

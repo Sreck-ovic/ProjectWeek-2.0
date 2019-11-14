@@ -13,6 +13,7 @@ public class Project{
 	public Project(int projectID, int maxStudents, int minStudents){
 		this.projectID = projectID;
 		this.maxStudents = maxStudents;
+		this.minStudents = minStudents;
 		this.enrolledStudents = new ArrayList<Person>();
 		this.numBoys = 0;
 		this.numGirls = 0;
